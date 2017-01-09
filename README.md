@@ -1,6 +1,26 @@
-# Agora@US Continuous Delivery Integration
+# Agora@US Continuous Integration
 
 Repositorio de integración continua para AgoraUS-G1 (mañana) en el curso 2016-17. Más información en https://1984.lsi.us.es/wiki-egc/index.php/Servidor_16/17
+
+# Proyectos Integrados
+
+Proyecto | Beta | Stable
+------------ | ------------- | -------------
+[Deliberations](https://github.com/AgoraUS-G1-1617/Deliberations) | [beta.deliberaciones...](https://beta.deliberaciones.agoraus1.egc.duckdns.org) | [deliberaciones...](https://deliberaciones.agoraus1.egc.duckdns.org)
+[Cabina-de-votaciones](https://github.com/AgoraUS-G1-1617/Cabina-de-votaciones) | [beta.cvotacion...](https://beta.cvotacion.agoraus1.egc.duckdns.org) | [cvotacion...](https://cvotacion.agoraus1.egc.duckdns.org)
+[CabinaTelegram](https://github.com/AgoraUS-G1-1617/CabinaTelegram) | [@CabinaEGCDevBot](https://telegram.me/CabinaEGCDevBot) | [@CabinaEGCBot](https://telegram.me/CabinaEGCBot)
+[Frontend](https://github.com/AgoraUS-G1-1617/Frontend) | [beta.frontend...](https://beta.frontend.agoraus1.egc.duckdns.org/) | [frontend...](https://frontend.agoraus1.egc.duckdns.org/)
+[Creacion-Admin-Votaciones](https://github.com/AgoraUS-G1-1617/Creacion-admin-de-votaciones) | [beta.cavotacion...](https://beta.cavotacion.agoraus1.egc.duckdns.org/) | [cavotacion...](https://cavotacion.agoraus1.egc.duckdns.org/)
+[Censos](https://github.com/AgoraUS-G1-1617/CensoEGC) | [beta.censos...](https://beta.censos.agoraus1.egc.duckdns.org/) | [censos...](https://censos.agoraus1.egc.duckdns.org)
+[Recuento y Modificación](https://github.com/AgoraUS-G1-1617/Recuento-y-modificacion) | [beta.recuento...](https://beta.recuento.agoraus1.egc.duckdns.org/) | [recuento...](https://recuento.agoraus1.egc.duckdns.org)
+[Autenticación_b](https://github.com/AgoraUS-G1-1617/Autenticacion_b) | [beta.authb...](https://beta.authb.agoraus1.egc.duckdns.org/) | [authb...](https://authb.agoraus1.egc.duckdns.org)
+[Autenticación_a](https://github.com/AgoraUS-G1-1617/Autentication) | [beta.autha...](https://beta.autha.agoraus1.egc.duckdns.org/) | [autha...](https://autha.agoraus1.egc.duckdns.org/)
+
+
+
+# ¿Como integro mi proyecto?
+
+[Aquí](documentation/presentation.pdf) puedes encontrar la presentación explicativa sobre como realizar la integración para nuevos proyectos. Si aun así no tienes claro como realizarlo siempre puedes empezar instalando Docker y consiguiendo lanzar tu aplicación dentro de él. Una vez hecho esto el resto del camino es sencillo. Animo ! ! !
 
 # Idea general
 
@@ -49,7 +69,7 @@ Este sistema solo deberá estar instalado donde se vaya a desplegar todo. Es nec
 
 ## Configuración jenkins
 
-Es necesario instalar el plugin [Deploy to container Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Deploy+Plugin) ([GitHub](https://github.com/jenkinsci/docker-plugin)). Para configurarlo iremos a Administrar Jenkins > Configurar el sistema > Añadir una nueva nube (abajo) > Docker y usaremos las siguientes opciones:
+Es necesario instalar el plugin [Deploy plugin](https://wiki.jenkins-ci.org/display/JENKINS/Docker+Plugin) ([GitHub](https://github.com/jenkinsci/docker-plugin)). Para configurarlo iremos a Administrar Jenkins > Configurar el sistema > Añadir una nueva nube (abajo) > Docker y usaremos las siguientes opciones:
 - Docker Name: docker_on_localhost
 - Docker URL: tcp://192.168.20.84:4243
 - Probamos la configuración en el botón "test configuration" y anotamos correctamente el "Docker API Version"

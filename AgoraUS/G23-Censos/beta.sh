@@ -1,14 +1,14 @@
 #!/bin/bash 
 
-ENV_NAME="AgoraUS-G1-Deliberations"
-URL_VIRTUAL_HOST="deliberaciones.agoraus1.egc.duckdns.org"
-BRANCH="stable"
-
+ENV_NAME="AgoraUS-G23-Censos"
+URL_VIRTUAL_HOST="beta.censos.agoraus1.egc.duckdns.org"
+BRANCH="beta"
+PROJECT_JENKINS_NAME="AgoraUS-G23-Censos_make"
 
 PATH_ROOT="/var/jenkins_home"
 PATH_ROOT_HOST="/home/egcuser/jenkins_home"
 
-CONF_TOMCAT_SERVER="$PATH_ROOT_HOST/continuous-delivery-playground/AgoraUS/G1-Deliberations/stable-conf/tomcat7/server.xml"
+CONF_TOMCAT_SERVER="$PATH_ROOT_HOST/continuous-delivery-playground/AgoraUS/G23-Censos/beta-conf/tomcat7/server.xml"
 
 MYSQL_PROJECT_ROUTE="localhost"
 MYSQL_ROOT_PASSWORD="$(date +%s | sha256sum | base64 | head -c 32)"
@@ -40,10 +40,12 @@ rm -r "$PATH_ROOT/deploys/$ENV_NAME/$BRANCH/"
 mkdir -p "$PATH_ROOT/deploys/$ENV_NAME/$BRANCH/webapps/"
 
 # WAR
-cp $PATH_ROOT/deploys/$ENV_NAME/beta/webapps/ROOT.war $PATH_ROOT/deploys/$ENV_NAME/$BRANCH/webapps/ROOT.war
+find "$PATH_ROOT/jobs/$PROJECT_JENKINS_NAME/lastSuccessful/" -follow -name *.war -exec cp {} "$PATH_ROOT/deploys/$ENV_NAME/$BRANCH/webapps/" \;
+mv $PATH_ROOT/deploys/$ENV_NAME/$BRANCH/webapps/*.war $PATH_ROOT/deploys/$ENV_NAME/$BRANCH/webapps/ROOT.war
 
 # SQL -> "jobs/test31/builds/lastSuccessfulBuild/archive/DeliberationsScript.sql"
-cp $PATH_ROOT/deploys/$ENV_NAME/beta/populate.sql $PATH_ROOT/deploys/$ENV_NAME/$BRANCH/populate.sql
+find "$PATH_ROOT/jobs/$PROJECT_JENKINS_NAME/lastSuccessful/archive/" -follow -name *.sql -exec cp {} "$PATH_ROOT/deploys/$ENV_NAME/$BRANCH/" \;
+mv $PATH_ROOT/deploys/$ENV_NAME/$BRANCH/*.sql $PATH_ROOT/deploys/$ENV_NAME/$BRANCH/populate.sql
 
 
 echo "Desplegando contenedores para $ENV_NAME"
@@ -68,9 +70,6 @@ echo "$ENV_NAME-mysql populado !"
 
 sleep 20
 
-docker exec $ENV_NAME-$BRANCH-mysql \
-    bash -c "echo "Europe/Madrid" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata"
-
 docker restart $ENV_NAME-$BRANCH-mysql
 
 sleep 5
@@ -83,6 +82,8 @@ docker run -d --name $ENV_NAME-$BRANCH-tomcat \
     --add-host autha.agoraus1.egc.duckdns.org:192.168.20.84 \
     --add-host beta.authb.agoraus1.egc.duckdns.org:192.168.20.84 \
     --add-host authb.agoraus1.egc.duckdns.org:192.168.20.84 \
+    --add-host recuento.agoraus1.egc.duckdns.org:192.168.20.84 \
+    --add-host beta.recuento.agoraus1.egc.duckdns.org:192.168.20.84 \
     --restart=always \
     -e VIRTUAL_HOST="$URL_VIRTUAL_HOST" \
     -e VIRTUAL_PORT=8080 \
@@ -90,8 +91,8 @@ docker run -d --name $ENV_NAME-$BRANCH-tomcat \
     -e "LETSENCRYPT_EMAIL=annonymous@alum.us.es" \
     tomcat:7
 
-docker exec $ENV_NAME-$BRANCH-tomcat \
-    bash -c "echo "Europe/Madrid" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata"
-
+#    -e "LETSENCRYPT_HOST=$URL_VIRTUAL_HOST" \
+#    -e "LETSENCRYPT_EMAIL=annonymous@alum.us.es" \
+#    -e VIRTUAL_PROTO=https \
 
 echo "Aplicación desplegada en https://$URL_VIRTUAL_HOST"

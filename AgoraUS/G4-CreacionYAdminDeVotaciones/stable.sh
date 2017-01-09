@@ -1,14 +1,14 @@
 #!/bin/bash 
 
-ENV_NAME="AgoraUS-G1-Deliberations"
-URL_VIRTUAL_HOST="deliberaciones.agoraus1.egc.duckdns.org"
+ENV_NAME="AgoraUS-G4-CreacionYAdminDeVotaciones"
+URL_VIRTUAL_HOST="cavotacion.agoraus1.egc.duckdns.org"
 BRANCH="stable"
 
 
 PATH_ROOT="/var/jenkins_home"
 PATH_ROOT_HOST="/home/egcuser/jenkins_home"
 
-CONF_TOMCAT_SERVER="$PATH_ROOT_HOST/continuous-delivery-playground/AgoraUS/G1-Deliberations/stable-conf/tomcat7/server.xml"
+CONF_TOMCAT_SERVER="$PATH_ROOT_HOST/continuous-delivery-playground/AgoraUS/G4-CreacionYAdminDeVotaciones/stable-conf/tomcat7/server.xml"
 
 MYSQL_PROJECT_ROUTE="localhost"
 MYSQL_ROOT_PASSWORD="$(date +%s | sha256sum | base64 | head -c 32)"
@@ -79,10 +79,10 @@ docker run -d --name $ENV_NAME-$BRANCH-tomcat \
     --link $ENV_NAME-$BRANCH-mysql:$MYSQL_PROJECT_ROUTE \
     -v "$PATH_ROOT_HOST/deploys/$ENV_NAME/$BRANCH/webapps/":/usr/local/tomcat/webapps \
     -v "$CONF_TOMCAT_SERVER":/usr/local/tomcat/conf/server.xml \
-    --add-host beta.autha.agoraus1.egc.duckdns.org:192.168.20.84 \
-    --add-host autha.agoraus1.egc.duckdns.org:192.168.20.84 \
-    --add-host beta.authb.agoraus1.egc.duckdns.org:192.168.20.84 \
-    --add-host authb.agoraus1.egc.duckdns.org:192.168.20.84 \
+     --add-host beta.autha.agoraus1.egc.duckdns.org:192.168.20.84 \
+     --add-host autha.agoraus1.egc.duckdns.org:192.168.20.84 \
+     --add-host beta.authb.agoraus1.egc.duckdns.org:192.168.20.84 \
+     --add-host authb.agoraus1.egc.duckdns.org:192.168.20.84 \
     --restart=always \
     -e VIRTUAL_HOST="$URL_VIRTUAL_HOST" \
     -e VIRTUAL_PORT=8080 \
@@ -90,8 +90,11 @@ docker run -d --name $ENV_NAME-$BRANCH-tomcat \
     -e "LETSENCRYPT_EMAIL=annonymous@alum.us.es" \
     tomcat:7
 
-docker exec $ENV_NAME-$BRANCH-tomcat \
-    bash -c "echo "Europe/Madrid" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata"
+#    -e "LETSENCRYPT_HOST=$URL_VIRTUAL_HOST" \
+#    -e "LETSENCRYPT_EMAIL=annonymous@alum.us.es" \
+#    -e VIRTUAL_PROTO=https \
 
+docker exec $ENV_NAME-$BRANCH-tomcat \
+   bash -c "echo "Europe/Madrid" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata"
 
 echo "Aplicación desplegada en https://$URL_VIRTUAL_HOST"
